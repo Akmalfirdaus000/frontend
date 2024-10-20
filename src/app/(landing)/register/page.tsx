@@ -1,57 +1,61 @@
-// app/(landing)/register/register.tsx
 'use client'
-// app/(landing)/register/page.tsx
-import { useState } from 'react';
-import { useRouter } from 'next/navigation'; // Pastikan untuk mengimpor dari 'next/navigation'
-import { register } from '../../../lib/api'; // Sesuaikan dengan path
+import React, { useState } from 'react';
+import { register } from '@/lib/auth-api/register'; // Ganti dengan path yang sesuai
 
-const Register = () => {
+const RegisterForm = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [error, setError] = useState('');
-  const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => { // Tipe ditambahkan di sini
     e.preventDefault();
+    setError('');
+
     try {
-      const response = await register(name, email, password);
-      router.push('/login'); // Redirect ke halaman login setelah registrasi sukses
+      const data = await register(name, email, password, passwordConfirmation);
+      console.log('Register berhasil:', data);
+      // Lakukan sesuatu setelah berhasil, misalnya redirect atau menampilkan pesan
     } catch (err) {
-      setError(err as string);
+      setError(err.message);
     }
   };
 
   return (
-    <div>
-      <h1>Register</h1>
-      {error && <p>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Register</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input 
+        type="text" 
+        placeholder="Name" 
+        value={name} 
+        onChange={(e) => setName(e.target.value)} 
+        required 
+      />
+      <input 
+        type="email" 
+        placeholder="Email" 
+        value={email} 
+        onChange={(e) => setEmail(e.target.value)} 
+        required 
+      />
+      <input 
+        type="password" 
+        placeholder="Password" 
+        value={password} 
+        onChange={(e) => setPassword(e.target.value)} 
+        required 
+      />
+      <input 
+        type="password" 
+        placeholder="Confirm Password" 
+        value={passwordConfirmation} 
+        onChange={(e) => setPasswordConfirmation(e.target.value)} 
+        required 
+      />
+      <button type="submit">Register</button>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+    </form>
   );
 };
 
-export default Register;
+export default RegisterForm;

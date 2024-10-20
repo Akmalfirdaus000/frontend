@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation'; // Perbarui import ini
-import { login } from '../../../lib/api';
+import { login } from '../../../lib/auth-api/login';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');

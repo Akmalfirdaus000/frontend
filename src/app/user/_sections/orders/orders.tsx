@@ -1,7 +1,7 @@
 // app/user/orders/page.tsx
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation'; 
-import { getOrders, createOrder } from '../../../../lib/api'; // Tambahkan fungsi ini di lib/api.ts
+import { getOrders, createOrder } from '../../../../lib/auth-api/login'; // Tambahkan fungsi ini di lib/api.ts
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
