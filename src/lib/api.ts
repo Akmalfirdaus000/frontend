@@ -1,26 +1,17 @@
-// api.ts
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8000/api';
 
-const apiClient = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Accept': 'application/json',
-  },
-});
-
 export const login = async (email: string, password: string) => {
   try {
-    const response = await apiClient.post('/login', {
-      email,
-      password,
+    const response = await axios.post(`${API_URL}/login`, { email, password }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      withCredentials: false,  // Tidak menggunakan kredensial CSRF
     });
-    return response.data; // Kembalikan data respons
+    return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.message || 'Login failed'); // Menangani kesalahan
-    }
-    throw new Error('Login failed. Please try again.'); // Menangani kesalahan umum
+    throw new Error('Login gagal');
   }
 };

@@ -1,50 +1,60 @@
-// pages/login.tsx
 'use client'
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation'; // Perbarui import ini
 import { login } from '../../../lib/api';
 
-const Login = () => {
+const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const router = useRouter();  // Menggunakan useRouter dari next/navigation
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault(); // Mencegah refresh halaman
-    setError('');
-
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
       const response = await login(email, password);
-      console.log('Login berhasil:', response); // Tampilkan respons di console
-      // Lakukan tindakan setelah login sukses, misalnya redirect
-    } catch (err) {
-      setError(err.message); // Menampilkan kesalahan di UI
+      if (response.token) {
+        // Simpan token ke local storage atau state management
+        localStorage.setItem('token', response.token);
+        // Arahkan pengguna ke halaman dashboard
+        router.push('/dashboard');
+      }
+    } catch (error: any) {
+      setError('Login gagal. Periksa email dan password Anda.');
     }
   };
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        <label>Email</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label>Password</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <button type="submit">Login</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Menampilkan error */}
-    </form>
+    <div className="min-h-screen flex items-center justify-center">
+      <form onSubmit={handleSubmit} className="w-full max-w-sm bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-2xl mb-4">Login</h2>
+        {error && <p className="text-red-500">{error}</p>}
+        <div className="mb-4">
+          <label className="block text-sm font-medium">Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg"
+            required
+          />
+        </div>
+        <div className="mb-6">
+          <label className="block text-sm font-medium">Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg"
+            required
+          />
+        </div>
+        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-lg">
+          Login
+        </button>
+      </form>
+    </div>
   );
 };
 
-export default Login;
+export default LoginPage;
